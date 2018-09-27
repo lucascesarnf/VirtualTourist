@@ -15,8 +15,7 @@ class VirtualTouristServices {
     var dataTasks: [String: URLSessionDataTask] = [:]
     
     
-    static func searchBy(latitude: Double, longitude: Double, totalPages: Int?, completion: @escaping (_ result: FlickrPhotos?, _ error: Error?) -> Void) {
-        
+    func searchBy(latitude: Double, longitude: Double, totalPages: Int?, completion: @escaping (_ result: FlickrPhotos?, _ error: Error?) -> Void) {
         // choosing a random page.
         var page: Int {
             if let totalPages = totalPages {
@@ -25,7 +24,7 @@ class VirtualTouristServices {
             }
             return 1
         }
-        let bbox = bboxString(latitude: latitude, longitude: longitude)
+        let bbox = VirtualTouristServices.bboxString(latitude: latitude, longitude: longitude)
         
         let parameters = [
             FlickrParameterKeys.Method           : FlickrParameterValues.SearchMethod
@@ -39,7 +38,7 @@ class VirtualTouristServices {
             , FlickrParameterKeys.Page           : "\(page)"
         ]
         
-        taskForGETMethod(parameters: parameters) { (data, error) in
+        VirtualTouristServices.taskForGETMethod(parameters: parameters) { (data, error) in
             if let error = error {
                 completion(nil, error)
                 return

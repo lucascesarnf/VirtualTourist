@@ -15,17 +15,26 @@ extension UIViewController {
         return UIApplication.shared.delegate as! AppDelegate
     }
     
+    func savePinWith(latitude: String,longitude: String) {
+        _ = Pin(
+            latitude: latitude,
+            longitude: longitude,
+            context: CoreDataStack.shared().context
+        )
+        save()
+    }
+    
     func save() {
         do {
             try CoreDataStack.shared().saveContext()
         } catch {
-            showAlert(withTitle: "Error", withMessage: "Error while saving Pin location: \(error)")
+            showAlertWith(title: "Error", message: "Error while saving Pin location: \(error)")
         }
     }
     
-    func showAlert(withTitle: String = "Info", withMessage: String, action: (() -> Void)? = nil) {
+    func showAlertWith(title: String = "Info", message: String, action: (() -> Void)? = nil) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: withTitle, message: withMessage, preferredStyle: .alert)
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(alertAction) in
                 action?()
             }))

@@ -34,11 +34,7 @@ class PinMapViewController: UIViewController {
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.destination is PhotosAlbumViewController {
-            guard let pin = sender as? Pin else {
-                return
-            }
-            let controller = segue.destination as! PhotosAlbumViewController
+        if let controller = segue.destination as? PhotosAlbumViewController, let pin = sender as? Pin {
             controller.pin = pin
         }
     }
@@ -61,20 +57,13 @@ class PinMapViewController: UIViewController {
         } else if sender.state == .changed {
             pinAnnotation!.coordinate = locCoord
         } else if sender.state == .ended {
-            
-            _ = Pin(
-                latitude: String(pinAnnotation!.coordinate.latitude),
-                longitude: String(pinAnnotation!.coordinate.longitude),
-                context: CoreDataStack.shared().context
-            )
-            save()
+            savePinWith(latitude: String(pinAnnotation!.coordinate.latitude), longitude: String(pinAnnotation!.coordinate.longitude))
         }
     }
     
     // MARK: - Utils
     private func initComponents() {
         navigationItem.rightBarButtonItem = editButtonItem
-        setStatusView(isHidden:true)
         if let pins = loadPins() {
             showPins(pins)
         }
@@ -93,7 +82,7 @@ class PinMapViewController: UIViewController {
             try pins = CoreDataStack.shared().fetchAllPins(entityName: Pin.name)
         } catch {
             print("\(#function) error:\(error)")
-            showAlert(withTitle: "Error", withMessage: "Error while fetching Pin locations: \(error)")
+            showAlertWith(title: "Error", message: "Error while fetching Pin locations: \(error)")
         }
         return pins
     }
@@ -105,7 +94,7 @@ class PinMapViewController: UIViewController {
             try pin = CoreDataStack.shared().fetchPin(predicate, entityName: Pin.name)
         } catch {
             print("\(#function) error:\(error)")
-            showAlert(withTitle: "Error", withMessage: "Error while fetching location: \(error)")
+            showAlertWith(title: "Error", message: "Error while fetching location: \(error)")
         }
         return pin
     }
@@ -144,7 +133,7 @@ extension PinMapViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            self.showAlert(withMessage: "No link defined.")
+            self.showAlertWith(message: "No link defined.")
         }
     }
     
@@ -165,7 +154,7 @@ extension PinMapViewController: MKMapViewDelegate {
                 save()
                 return
             }
-            performSegue(withIdentifier: "showAlbum", sender: pin)
+            performSegue(withIdentifier: "segueAlbum", sender: pin)
         }
     }
 }
