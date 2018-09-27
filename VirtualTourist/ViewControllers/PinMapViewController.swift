@@ -41,7 +41,6 @@ class PinMapViewController: UIViewController {
     
     //MARK: - Actions
     @IBAction func addPinGesture(_ sender: UILongPressGestureRecognizer) {
-        
         let location = sender.location(in: mapView)
         let locCoord = mapView.convert(location, toCoordinateFrom: mapView)
         
@@ -114,7 +113,6 @@ class PinMapViewController: UIViewController {
 //MARK: - Map View Delegate
 extension PinMapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
         let reuseId = "pin"
         
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
@@ -138,7 +136,6 @@ extension PinMapViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        
         guard let annotation = view.annotation else {
             return
         }
